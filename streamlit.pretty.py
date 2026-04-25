@@ -24,34 +24,35 @@ archive_folder = "C:/Users/jmac8/OneDrive/Desktop/NewsArchive"
 
 # --- DATA ENGINE ---
 def load_data():
-    # Use a relative path for the cloud
+    # Use relative path for GitHub/Streamlit Cloud
     archive_path = "./NewsArchive"
     
-    # Create the folder if it's missing (helps prevent cloud crashes)
     if not os.path.exists(archive_path):
-        os.makedirs(archive_path)
+        return []
         
     files = glob.glob(os.path.join(archive_path, "*.json"))
-    return files if files else [] # Return an empty list instead of None
+    # Filter out any non-string values just in case
+    return [f for f in files if f is not None]
 
 all_files = load_data()
 
 # --- SIDEBAR ---
-st.sidebar.title("🏢 Intel Archive")
+st.sidebar.title("Fact Archive")
 
-if all_files:
-    # Sort them newest first
+# Ensure all_files is a list and has content
+if all_files and len(all_files) > 0:
+    # Sort by time so newest is on top
     all_files.sort(key=os.path.getmtime, reverse=True)
     
-    file_display_names = [os.path.basename(f) for f in all_files]
+    # Create the display names safely
+    file_display_names = [os.path.basename(f) for f in all_files if f]
+    
     selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names)
     file_path = os.path.join("./NewsArchive", selected_name)
 else:
-    st.sidebar.warning("No archives found in GitHub.")
-    file_path = None
-
-# --- MAIN DASHBOARD ---
-st.title("📡 Fact Extract - 100% Concentrate")
+    st.sidebar.warning("No archives found. Check your GitHub 'NewsArchive' folder.")
+    file_path = None# --- MAIN DASHBOARD ---
+st.title("Fact Extract - 100% Concentrate")
 st.markdown(f"**Hardware Instance:** ROG Flow Z13 (128GB) | **Core Engine:** Llama 3.1 70B")
 st.divider()
 
