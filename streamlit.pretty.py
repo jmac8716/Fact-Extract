@@ -20,7 +20,8 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True) # <--- Correct parameter name
 
-archive_folder = "C:\Users\jmac8\OneDrive\Documents\GitHub\Fact Extract\NewsArchive"
+# This tells the cloud to look in the NewsArchive folder inside your GitHub repo
+archive_folder = "NewsArchive"
 
 # --- DATA ENGINE ---
 def load_data():
