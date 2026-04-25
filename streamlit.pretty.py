@@ -20,7 +20,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True) # <--- Correct parameter name
 
-archive_folder = "C:/Users/jmac8/OneDrive/Desktop/NewsArchive"
+archive_folder = "C:\Users\jmac8\OneDrive\Documents\GitHub\Fact Extract\NewsArchive"
 
 # --- DATA ENGINE ---
 def load_data():
