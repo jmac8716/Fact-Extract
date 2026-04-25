@@ -24,19 +24,30 @@ archive_folder = "C:/Users/jmac8/OneDrive/Desktop/NewsArchive"
 
 # --- DATA ENGINE ---
 def load_data():
-    files = glob.glob(os.path.join(archive_folder, "*.json"))
-    if not files: return None, None
-    files.sort(key=os.path.getmtime, reverse=True)
-    return files
+    # Use a relative path for the cloud
+    archive_path = "./NewsArchive"
+    
+    # Create the folder if it's missing (helps prevent cloud crashes)
+    if not os.path.exists(archive_path):
+        os.makedirs(archive_path)
+        
+    files = glob.glob(os.path.join(archive_path, "*.json"))
+    return files if files else [] # Return an empty list instead of None
 
 all_files = load_data()
 
 # --- SIDEBAR ---
 st.sidebar.title("🏢 Intel Archive")
+
 if all_files:
-    selected_file = st.sidebar.selectbox("Choose Report Time:", [os.path.basename(f) for f in all_files])
-    file_path = os.path.join(archive_folder, selected_name if 'selected_name' in locals() else selected_file)
+    # Sort them newest first
+    all_files.sort(key=os.path.getmtime, reverse=True)
+    
+    file_display_names = [os.path.basename(f) for f in all_files]
+    selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names)
+    file_path = os.path.join("./NewsArchive", selected_name)
 else:
+    st.sidebar.warning("No archives found in GitHub.")
     file_path = None
 
 # --- MAIN DASHBOARD ---
