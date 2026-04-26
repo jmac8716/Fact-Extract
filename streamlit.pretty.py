@@ -68,16 +68,18 @@ if file_path:
 
     st.write("---")
 
-    for entry in data:
-        # Create a professional container for each article
-        with st.container():
-            # Header Columns
-            head_col, link_col = st.columns([5, 1])
-            with head_col:
-                # Advanced Version: Removes 'Analysis' AND turns dashes into spaces
-                raw_title = display_url.split('/')[-1][:60].replace("Analysis:", "")
-                clean_title = raw_title.replace("-", " ").replace("_", " ").title()
-                st.subheader(f"{clean_title}")
+    # Look for the line where you loop through your data
+for entry in data:
+    # 1. Define the URL variable first (this is what was missing!)
+    # Most scrapers save the link as 'url'
+    display_url = entry.get('url', 'Source Link') 
+
+    # 2. Now you can safely create the clean title
+    raw_title = display_url.split('/')[-1][:60].replace("Analysis:", "")
+    clean_title = raw_title.replace("-", " ").replace("_", " ").title()
+    
+    # 3. Display it
+    st.subheader(f"🌐 {clean_title}")
             with link_col:
                 st.link_button("Open Source", entry['url'])
             
