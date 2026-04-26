@@ -79,9 +79,10 @@ for entry in data:
     clean_title = raw_title.replace("-", " ").replace("_", " ").title()
     
     # 3. Display it
-    st.subheader(f"🌐 {clean_title}")
-            with link_col:
-                st.link_button("Open Source", entry['url'])
+    st.subheader(f"{clean_title}")
+
+with link_col:
+    st.link_button("Open Source", entry['url'])
             
             # The Content
             content_to_display = entry.get('report', entry.get('facts', "No content available"))
