@@ -73,16 +73,24 @@ if file_path:
 # This is the 'if' line you need to add back:
 if data:
     for entry in data:
-        # (Your existing display logic for titles and summaries goes here)
-        article_title = entry.get('title', entry.get('url', 'Untitled Report'))
-        raw_title = display_url.split('/')[-1]
-        clean_text = raw_title.split('?')[0].replace(".html", "").replace(".php", "")
-        clean_title = clean_text.replace("Analysis:", "").replace("-", " ").replace("_", " ").title()
-        
-        st.subheader(f"{clean_title}")
-        content_to_display = entry.get('report', entry.get('facts', "No content available"))
-        st.markdown(content_to_display)
-        st.divider()
+    # 1. DEFINE display_url first so line 78 can see it
+    # We look for 'title' first (new), then 'url' (old), then 'Untitled'
+    display_url = entry.get('url', 'Untitled-Report') 
+
+    # 2. NOW we can perform the split on display_url
+    raw_title = display_url.split('/')[-1]
+    
+    # 3. Clean up the technical junk
+    clean_text = raw_title.split('?')[0].replace(".html", "").replace(".php", "")
+    clean_title = clean_text.replace("Analysis:", "").replace("-", " ").replace("_", " ").title()
+    
+    # 4. Display it
+    st.subheader(f"{clean_title}")
+    
+    # 5. Display the content
+    content_to_display = entry.get('report', entry.get('facts', "No content available"))
+    st.markdown(content_to_display)
+    st.divider()
 
 else:
     st.warning("Waiting for local Z13 to push data to the archive...")
