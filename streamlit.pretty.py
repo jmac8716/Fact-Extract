@@ -54,7 +54,6 @@ else:
     st.sidebar.warning("No archives found. Check your GitHub 'NewsArchive' folder.")
     file_path = None# --- MAIN DASHBOARD ---
 st.title("Fact Extract - 100% Concentrate")
-st.markdown(f"**Hardware Instance:** ROG Flow Z13 (128GB) | **Core Engine:** Llama 3.1 70B")
 st.divider()
 
 if file_path:
@@ -75,7 +74,10 @@ if file_path:
             # Header Columns
             head_col, link_col = st.columns([5, 1])
             with head_col:
-                st.subheader(f"🌐 Analysis: {entry['url'].split('/')[-1][:50]}...")
+                # Advanced Version: Removes 'Analysis' AND turns dashes into spaces
+                raw_title = display_url.split('/')[-1][:60].replace("Analysis:", "")
+                clean_title = raw_title.replace("-", " ").replace("_", " ").title()
+                st.subheader(f"{clean_title}")
             with link_col:
                 st.link_button("Open Source", entry['url'])
             
