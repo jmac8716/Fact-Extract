@@ -85,12 +85,12 @@ with link_col:
     st.link_button("Open Source", entry['url'])
             
             # The Content
-            content_to_display = entry.get('report', entry.get('facts', "No content available"))
-            st.markdown(content_to_display)
+    content_to_display = entry.get('report', entry.get('facts', "No content available"))
+    st.markdown(content_to_display)
             
             # The Footer (Fixed Indentation here)
-            st.caption(f"Processed at {entry.get('time', 'N/A')} | System: Q8_0 Local Quantization")
-            st.divider()
+    st.caption(f"Processed at {entry.get('time', 'N/A')} | System: Q8_0 Local Quantization")
+    st.divider()
 
 else:
     st.warning("Waiting for local Z13 to push data to the archive...")
