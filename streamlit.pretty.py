@@ -74,7 +74,7 @@ if file_path:
 if data:
     for entry in data:
         # (Your existing display logic for titles and summaries goes here)
-        display_url = entry.get('url', 'Source Link')
+        article_title = entry.get('title', entry.get('url', 'Untitled Report'))
         raw_title = display_url.split('/')[-1]
         clean_text = raw_title.split('?')[0].replace(".html", "").replace(".php", "")
         clean_title = clean_text.replace("Analysis:", "").replace("-", " ").replace("_", " ").title()
