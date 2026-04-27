@@ -87,7 +87,7 @@ if file_path:
 if data:
     for entry in data:
         # 1. Get the title from JSON
-        category = entry.get('category', 'GENERAL').upper # Fallback to 'General' if missing
+        category = entry.get('category', 'GENERAL').upper() # Fallback to 'General' if missing
         saved_title = entry.get('title')
         article_url = entry.get('url', '')
         
