@@ -87,9 +87,10 @@ if file_path:
 if data:
     for entry in data:
         # 1. Get the title from JSON
+        category = entry.get('category', 'GENERAL').upper # Fallback to 'General' if missing
         saved_title = entry.get('title')
         article_url = entry.get('url', '')
-        category = entry.get('category', 'General') # Fallback to 'General' if missing
+        
 
         # 2. Logic Switch: If title exists and isn't just a link, use it.
         # Otherwise, fall back to cleaning the URL.
@@ -100,12 +101,12 @@ if data:
             # Fallback: Clean the URL slug
             raw_slug = article_url.split('/')[-1].split('?')[0]
             display_title = raw_slug.replace(".html", "").replace("-", " ").replace("_", " ").title()
-
+        
+        # A. Category first (Small and subtle, or bold)
+        st.markdown(f":blue[**{category}**"])
+        
         # 3. Display the clean title
         st.subheader(f"{display_title}")
-
-        # B. Add Category right below (using caption for a smaller, greyed look)
-        st.caption(f"**{category}**")
     
         # 4. Display the content
         content_to_display = entry.get('report', entry.get('facts', "No content available"))
