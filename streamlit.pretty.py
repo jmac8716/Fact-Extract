@@ -40,19 +40,27 @@ all_files = load_data()
 # --- SIDEBAR ---
 st.sidebar.title("Fact Archive")
 
-# Ensure all_files is a list and has content
-if all_files and len(all_files) > 0:
-    # Sort by time so newest is on top
-    all_files.sort(key=os.path.getmtime, reverse=True)
+# Filter the list to ensure no None values crept in
+valid_files = [f for f in all_files if f and isinstance(f, str)]
+
+if valid_files:
+    # SORTING: Since your files are named like 20260426-2100.json, 
+    # we can just sort the names alphabetically in reverse! 
+    # It's faster and won't crash like os.path.getmtime.
+    valid_files.sort(reverse=True)
     
-    # Create the display names safely
-    file_display_names = [os.path.basename(f) for f in all_files if f]
+    # Create the display names
+    file_display_names = [os.path.basename(f) for f in valid_files]
     
     selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names)
-    file_path = os.path.join("./NewsArchive", selected_name)
+    
+    # Use the name to build the full path
+    file_path = os.path.join("NewsArchive", selected_name)
 else:
     st.sidebar.warning("No archives found. Check your GitHub 'NewsArchive' folder.")
-    file_path = None# --- MAIN DASHBOARD ---
+    file_path = None
+
+# --- MAIN DASHBOARD ---
 st.title("Fact Extract - 100% Concentrate")
 st.divider()
 
@@ -61,10 +69,8 @@ if file_path:
         data = json.load(f)
 
     # Top level metrics
-    m1, m2, m3 = st.columns(3)
+    m1 = st.columns(1)
     m1.metric("Current Articles", len(data))
-    m2.metric("Security Status", "Secured")
-    m3.metric("Local Compute", "GPU Enabled")
 
     st.write("---")
 
@@ -73,23 +79,27 @@ if file_path:
 # This is the 'if' line you need to add back:
 if data:
     for entry in data:
-    # 1. DEFINE display_url first so line 78 can see it
-    # We look for 'title' first (new), then 'url' (old), then 'Untitled'
-        display_url = entry.get('url', 'Untitled-Report') 
+        # 1. Get the title from JSON
+        saved_title = entry.get('title')
+        article_url = entry.get('url', '')
 
-    # 2. NOW we can perform the split on display_url
-        raw_title = display_url.split('/')[-1]
+        # 2. Logic Switch: If title exists and isn't just a link, use it.
+        # Otherwise, fall back to cleaning the URL.
+        if saved_title and "http" not in saved_title:
+            display_title = saved_title
+        
+        else:
+            # Fallback: Clean the URL slug
+            raw_slug = article_url.split('/')[-1].split('?')[0]
+            display_title = raw_slug.replace(".html", "").replace("-", " ").replace("_", " ").title()
+
+        # 3. Display the clean title
+        st.subheader(f"{display_title}")
     
-    # 3. Clean up the technical junk
-        clean_text = raw_title.split('?')[0].replace(".html", "").replace(".php", "")
-        clean_title = clean_text.replace("Analysis:", "").replace("-", " ").replace("_", " ").title()
-    
-    # 4. Display it
-        st.subheader(f"{clean_title}")
-    
-    # 5. Display the content
+        # 4. Display the content
         content_to_display = entry.get('report', entry.get('facts', "No content available"))
         st.markdown(content_to_display)
+        st.write(f"[Source Link]({article_url})") # Optional: adds a clickable link
         st.divider()
 
 else:
