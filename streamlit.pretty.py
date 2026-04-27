@@ -103,7 +103,7 @@ if data:
             display_title = raw_slug.replace(".html", "").replace("-", " ").replace("_", " ").title()
         
         # A. Category first (Small and subtle, or bold)
-        st.markdown(f":blue[**{category}**"])
+        st.markdown(f":blue[**{category}**]")
         
         # 3. Display the clean title
         st.subheader(f"{display_title}")
