@@ -89,6 +89,7 @@ if data:
         # 1. Get the title from JSON
         saved_title = entry.get('title')
         article_url = entry.get('url', '')
+        category = entry.get('category', 'General') # Fallback to 'General' if missing
 
         # 2. Logic Switch: If title exists and isn't just a link, use it.
         # Otherwise, fall back to cleaning the URL.
@@ -102,6 +103,9 @@ if data:
 
         # 3. Display the clean title
         st.subheader(f"{display_title}")
+
+        # B. Add Category right below (using caption for a smaller, greyed look)
+        st.caption(f"**{category}**")
     
         # 4. Display the content
         content_to_display = entry.get('report', entry.get('facts', "No content available"))
