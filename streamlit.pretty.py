@@ -69,8 +69,13 @@ if file_path:
         data = json.load(f)
 
     # Top level metrics
-    m1 = st.columns(1)
-    m1.metric("Current Articles", len(data))
+    m1, m2 = st.columns(2)
+    if data:
+        m1.metric("Current Articles", len(data))
+        unique_cats = len(set(entry.get('category', 'Unknown') for entry in data))
+        m2.metric("Categories", unique_cats)
+    else:    
+        st.warning("No data found in this report.")
 
     st.write("---")
 
