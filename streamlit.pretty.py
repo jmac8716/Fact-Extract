@@ -32,6 +32,8 @@ def load_data():
         return []
         
     files = glob.glob(os.path.join(archive_path, "*.json"))
+    # 1. SORT HERE: Reverse alphabetical puts the newest timestamp first
+    files.sort(reverse=True)
     # Filter out any non-string values just in case
     return [f for f in files if f is not None]
 
@@ -52,7 +54,7 @@ if valid_files:
     # Create the display names
     file_display_names = [os.path.basename(f) for f in valid_files]
     
-    selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names)
+    selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names, index=0)
     
     # Use the name to build the full path
     file_path = os.path.join("NewsArchive", selected_name)
