@@ -89,10 +89,10 @@ if data:
         article_url = entry.get('url', '')
         
         if saved_title and "http" not in saved_title:
-            display_title = saved_title
+            display_title = saved_title.upper()
         else:
             raw_slug = article_url.split('/')[-1].split('?')[0] if article_url else "unknown-source"
-            display_title = raw_slug.replace(".html", "").replace("-", " ").replace("_", " ").title()
+            display_title = raw_slug.replace(".html", "").replace("-", " ").replace("_", " ").upper()
         
         st.markdown(f":blue[**{category}**]")
         st.subheader(f"{display_title}")
