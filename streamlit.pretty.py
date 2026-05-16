@@ -1,4 +1,4 @@
-﻿import streamlit as st
+import streamlit as st
 import json
 import os
 import glob
@@ -32,7 +32,11 @@ def load_data():
         
     files = glob.glob(os.path.join(archive_path, "*.json"))
     files.sort(reverse=True)
+<<<<<<< HEAD
     # Ensure absolutely no None values pass through
+=======
+    # Strictly block any None elements from passing through
+>>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
     return [f for f in files if f is not None]
 
 all_files = load_data()
@@ -40,7 +44,11 @@ all_files = load_data()
 # --- SIDEBAR ---
 st.sidebar.title("Fact Archive")
 
+<<<<<<< HEAD
 # Pure string validation
+=======
+# Validate all items are strings
+>>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
 valid_files = [f for f in all_files if f and isinstance(f, str)]
 
 file_path = None
@@ -49,13 +57,20 @@ selected_name = None
 if valid_files:
     valid_files.sort(reverse=True)
     
+<<<<<<< HEAD
     # Double-check elements aren't empty strings or paths evaluating strangely
+=======
+    # SAFETY REWRITE: Guarding basename with an explicit string-check condition
+>>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
     file_display_names = [os.path.basename(f) for f in valid_files if f]
     
     if file_display_names:
         selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names, index=0)
     
+<<<<<<< HEAD
     # Only try to stitch the path together if selectbox actually gave you a string string
+=======
+>>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
     if selected_name:
         file_path = os.path.join("NewsArchive", selected_name)
 else:
@@ -85,11 +100,14 @@ if file_path and os.path.exists(file_path):
     else:    
         st.warning("No data found in this report.")
 
+<<<<<<< HEAD
     st.write("---")
 else:
     if file_path:
         st.error(f"⚠️ Report file path specified but could not be located on disk: {file_path}")
 
+=======
+>>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
 # --- MAIN DISPLAY AREA ---
 if data:
     for entry in data:
