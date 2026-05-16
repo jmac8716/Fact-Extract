@@ -6,7 +6,6 @@ import glob
 # --- UI CONFIGURATION ---
 st.set_page_config(page_title="Z13 Global Intel", page_icon="📡", layout="wide")
 
-# Custom CSS for that "Dark Mode Premium" or "Clean Enterprise" look
 st.markdown("""
     <style>
     [data-testid="stMetricValue"] { font-size: 1.5rem; color: #007BFF; }
@@ -20,7 +19,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# This tells the cloud to look in the NewsArchive folder inside your GitHub repo
 archive_folder = "NewsArchive"
 
 # --- DATA ENGINE ---
@@ -32,11 +30,6 @@ def load_data():
         
     files = glob.glob(os.path.join(archive_path, "*.json"))
     files.sort(reverse=True)
-<<<<<<< HEAD
-    # Ensure absolutely no None values pass through
-=======
-    # Strictly block any None elements from passing through
->>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
     return [f for f in files if f is not None]
 
 all_files = load_data()
@@ -44,11 +37,6 @@ all_files = load_data()
 # --- SIDEBAR ---
 st.sidebar.title("Fact Archive")
 
-<<<<<<< HEAD
-# Pure string validation
-=======
-# Validate all items are strings
->>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
 valid_files = [f for f in all_files if f and isinstance(f, str)]
 
 file_path = None
@@ -57,20 +45,11 @@ selected_name = None
 if valid_files:
     valid_files.sort(reverse=True)
     
-<<<<<<< HEAD
-    # Double-check elements aren't empty strings or paths evaluating strangely
-=======
-    # SAFETY REWRITE: Guarding basename with an explicit string-check condition
->>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
     file_display_names = [os.path.basename(f) for f in valid_files if f]
     
     if file_display_names:
         selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names, index=0)
     
-<<<<<<< HEAD
-    # Only try to stitch the path together if selectbox actually gave you a string string
-=======
->>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
     if selected_name:
         file_path = os.path.join("NewsArchive", selected_name)
 else:
@@ -80,7 +59,6 @@ else:
 st.title("Fact Extract - 100% Concentrate")
 st.divider()
 
-# Core fallback tracking variable initialization
 data = []
 
 if file_path and os.path.exists(file_path):
@@ -91,7 +69,6 @@ if file_path and os.path.exists(file_path):
             st.error("⚠️ Selected JSON report appears corrupted or incomplete.")
             data = []
 
-    # Top level metrics
     m1, m2 = st.columns(2)
     if data:
         m1.metric("Current Articles", len(data))
@@ -99,15 +76,8 @@ if file_path and os.path.exists(file_path):
         m2.metric("Categories", unique_cats)
     else:    
         st.warning("No data found in this report.")
-
-<<<<<<< HEAD
     st.write("---")
-else:
-    if file_path:
-        st.error(f"⚠️ Report file path specified but could not be located on disk: {file_path}")
 
-=======
->>>>>>> 16e69fdea20b2838543821157832bf0598da02b9
 # --- MAIN DISPLAY AREA ---
 if data:
     for entry in data:
@@ -130,7 +100,6 @@ if data:
             st.write(f"[Source Link]({article_url})")
         st.divider()
 else:
-    # This acts as the clean catch-all layout if data is an empty list
     st.warning("Waiting for local Z13 to push data to the archive...")
 
 st.sidebar.divider()
