@@ -30,7 +30,7 @@ def load_data():
         
     files = glob.glob(os.path.join(archive_path, "*.json"))
     files.sort(reverse=True)
-    # Block any None values from sneaking in
+    # Strictly block any None elements from passing through
     return [f for f in files if f is not None]
 
 all_files = load_data()
@@ -38,7 +38,7 @@ all_files = load_data()
 # --- SIDEBAR ---
 st.sidebar.title("Fact Archive")
 
-# Ensure all elements are actual strings
+# Validate all items are strings
 valid_files = [f for f in all_files if f and isinstance(f, str)]
 
 file_path = None
@@ -47,7 +47,7 @@ selected_name = None
 if valid_files:
     valid_files.sort(reverse=True)
     
-    # SAFETY SHIELD: Only run basename if f is a valid string
+    # SAFETY REWRITE: Guarding basename with an explicit string-check condition
     file_display_names = [os.path.basename(f) for f in valid_files if f]
     
     if file_display_names:
@@ -79,7 +79,6 @@ if file_path and os.path.exists(file_path):
         m2.metric("Categories", unique_cats)
     else:    
         st.warning("No data found in this report.")
-
     st.write("---")
 
 # --- MAIN DISPLAY AREA ---
