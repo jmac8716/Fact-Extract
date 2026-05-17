@@ -19,16 +19,16 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# Use absolute matching relative to project directory
 archive_folder = "NewsArchive"
 
 # --- DATA ENGINE ---
 def load_data():
-    archive_path = "./NewsArchive"
-    
-    if not os.path.exists(archive_path):
+    # Keep path notation identical everywhere
+    if not os.path.exists(archive_folder):
         return []
         
-    files = glob.glob(os.path.join(archive_path, "*.json"))
+    files = glob.glob(os.path.join(archive_folder, "*.json"))
     files.sort(reverse=True)
     return [f for f in files if f is not None]
 
@@ -44,14 +44,13 @@ selected_name = None
 
 if valid_files:
     valid_files.sort(reverse=True)
-    
     file_display_names = [os.path.basename(f) for f in valid_files if f]
     
     if file_display_names:
         selected_name = st.sidebar.selectbox("Choose Report Time:", file_display_names, index=0)
     
     if selected_name:
-        file_path = os.path.join("NewsArchive", selected_name)
+        file_path = os.path.join(archive_folder, selected_name)
 else:
     st.sidebar.warning("No archives found. Check your GitHub 'NewsArchive' folder.")
 
@@ -59,6 +58,7 @@ else:
 st.title("Fact Extract - 100% Concentrate")
 st.divider()
 
+# Ensure data is ALWAYS defined as an empty list to avoid reference errors
 data = []
 
 if file_path and os.path.exists(file_path):
@@ -77,6 +77,9 @@ if file_path and os.path.exists(file_path):
     else:    
         st.warning("No data found in this report.")
     st.write("---")
+else:
+    # Handle the case where no files exist yet gracefully without throwing a trace error
+    st.info("💡 Select a valid report from the sidebar archive to begin.")
 
 # --- MAIN DISPLAY AREA ---
 if data:
@@ -100,7 +103,9 @@ if data:
             st.write(f"[Source Link]({article_url})")
         st.divider()
 else:
-    st.warning("Waiting for local Z13 to push data to the archive...")
+    # Only display this if we've explicitly checked and there is no active data array
+    if not file_path:
+        st.warning("Waiting for local Z13 to push data to the archive...")
 
 st.sidebar.divider()
 if st.sidebar.button("Clear Cache"):
