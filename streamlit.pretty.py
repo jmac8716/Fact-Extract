@@ -74,6 +74,15 @@ if file_path and os.path.exists(file_path):
         m1.metric("Current Articles", len(data))
         unique_cats = len(set(entry.get('category', 'Unknown') for entry in data))
         m2.metric("Categories", unique_cats)
+
+# Look for the matching mp3 file using the active JSON file name
+        st.write(" ")
+        expected_audio_path = file_path.replace('.json', '.mp3')
+    
+        if os.path.exists(expected_audio_path):
+            st.markdown("### 🔊 Audio Intel Broadcast")
+            with open(expected_audio_path, "rb") as audio_file:
+                st.audio(audio_file.read(), format="audio/mp3")
     else:    
         st.warning("No data found in this report.")
     st.write("---")

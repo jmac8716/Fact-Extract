@@ -1,6 +1,7 @@
 import json, urllib.request, trafilatura, datetime, time, os, feedparser, re, subprocess
 from trafilatura.feeds import find_feed_urls
 from playwright.sync_api import sync_playwright
+from gtts import gTTS
 from docx import Document
 
 SEEN_URLS_FILE = r"C:\Users\jmac8\OneDrive\Documents\GitHub\Fact Extract\seen_urls.txt"
@@ -261,7 +262,7 @@ def push_to_github():
     try:
         os.chdir(r"C:\Users\jmac8\OneDrive\Documents\GitHub\Fact Extract") 
         subprocess.run(["git", "add", "."], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-update News Archive (Set default Category to HEADLINES)"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-update News Archive with Audio Broadcast"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("✅ Cloud Update Complete!")
     except Exception as e:
@@ -274,6 +275,38 @@ if len(all_results) > 0:
         json.dump(all_results, f, indent=4, ensure_ascii=False)
 
     print(f"✅ Successfully saved {len(all_results)} total combined reports to {save_path}")
+
+    # ========================================================
+    # 🎙️ FIXED AUDIO GENERATION ENGINE
+    # ========================================================
+    print("🔊 Generating audio broadcast from scraped intel...")
+    
+    # 1. Compile the news text into a single spoken script using all_results
+    audio_script = "Starting tactical intelligence report broadcast. "
+    for entry in all_results:
+        category = entry.get('category', 'General').upper()
+        title = entry.get('title', 'Untitled Report')
+        facts = entry.get('report', entry.get('facts', 'No content summary available.'))
+        
+        audio_script += f" New Update in Category: {category}. Headline: {title}. Details: {facts}. "
+    
+    try:
+        # 2. Convert the text script to speech
+        tts = gTTS(text=audio_script, lang='en', tld='com', slow=False)
+        
+        # 3. Match your script's native timestamp and ARCHIVE_FOLDER variable rules
+        audio_filename = f"{timestamp}.mp3"
+        audio_filepath = os.path.join(ARCHIVE_FOLDER, audio_filename)
+        
+        # 4. Save it locally
+        tts.save(audio_filepath)
+        print(f"🔊 Audio file successfully compiled: {audio_filepath}")
+        
+    except Exception as e:
+        print(f"⚠️ Audio generation failed: {e}")
+    # ========================================================
+
+    # Fire the GitHub routine to push BOTH the JSON and the MP3 file together
     push_to_github()
 else:
     print("⚠️ No new updates found or compiled from any source arrays. Sync skipped.")
