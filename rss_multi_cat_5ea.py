@@ -282,7 +282,7 @@ if len(all_results) > 0:
     print("🔊 Generating NEURAL audio broadcast from scraped intel...")
     
     # 1. Compile the news text into a single spoken script
-    audio_script = "Here are your updates on current events from Fact Extract."
+    audio_script = "Here are your updates on current events from Fact Extract. "
     for entry in all_results:
         category = entry.get('category', 'General').upper()
         title = entry.get('title', 'Untitled Report')
@@ -298,9 +298,7 @@ if len(all_results) > 0:
         audio_filename = f"{timestamp}.mp3"
         audio_filepath = os.path.join(ARCHIVE_FOLDER, audio_filename)
         
-        # 3. Select a natural voice and run the compiler
-        # 'en-US-AndrewNeural' is a clean, masculine news-anchor style voice.
-        # Alternative: 'en-US-AvaNeural' for a crisp, professional female voice.
+        # 3. Compile the script using Emma's neural voice
         async def voice_compile():
             communicate = edge_tts.Communicate(audio_script, "en-US-EmmaNeural")
             await communicate.save(audio_filepath)
@@ -311,9 +309,12 @@ if len(all_results) > 0:
     except Exception as e:
         print(f"⚠️ Neural audio generation failed: {e}")
     # ========================================================
-    # ========================================================
 
-    # Fire the GitHub routine to push BOTH the JSON and the MP3 file together
+    # 🔥 NEW BUFFER: Give OneDrive 5 seconds to scan the heavy mp3 file and let go of its lock
+    print("⏳ Waiting 5 seconds for system file locks to clear...")
+    time.sleep(5)
+
+    # Fire the GitHub routine to push BOTH files smoothly
     push_to_github()
 else:
     print("⚠️ No new updates found or compiled from any source arrays. Sync skipped.")
