@@ -1,0 +1,26 @@
+import asyncio
+import edge_tts
+import os
+
+# Text to test the voice
+test_text = "System check complete. This is the new neural voice engine active on your Z13 tablet. The audio broadcast pipeline is fully functional and ready for tactical intelligence processing."
+
+async def run_test():
+    # Save it straight to your desktop for easy listening
+    desktop_path = os.path.expanduser("~/Desktop/voice_test.mp3")
+    
+    print("🎙️ Compiling neural audio clip...")
+    communicate = edge_tts.Communicate(test_text, "en-US-AndrewNeural")
+    await communicate.save(desktop_path)
+    print(f"✅ Success! File saved to your Desktop as: voice_test.mp3")
+
+if __name__ == "__main__":
+    asyncio.run(run_test())
+
+## other voices en-US-AndrewNeural - Deep, authoritative news briefing style (Default).
+
+## en-US-AvaNeural - Crisp, clear, professional standard narrator.
+
+## en-GB-RyanNeural - Professional British intelligence/news style accent.
+
+## en-AU-WilliamNeural - Smooth Australian briefing style accent.

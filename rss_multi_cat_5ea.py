@@ -277,11 +277,11 @@ if len(all_results) > 0:
     print(f"✅ Successfully saved {len(all_results)} total combined reports to {save_path}")
 
     # ========================================================
-    # 🎙️ FIXED AUDIO GENERATION ENGINE
+    # 🎙️ NEURAL AUDIO GENERATION ENGINE (UPGRADED)
     # ========================================================
-    print("🔊 Generating audio broadcast from scraped intel...")
+    print("🔊 Generating NEURAL audio broadcast from scraped intel...")
     
-    # 1. Compile the news text into a single spoken script using all_results
+    # 1. Compile the news text into a single spoken script
     audio_script = "Starting tactical intelligence report broadcast. "
     for entry in all_results:
         category = entry.get('category', 'General').upper()
@@ -291,19 +291,26 @@ if len(all_results) > 0:
         audio_script += f" New Update in Category: {category}. Headline: {title}. Details: {facts}. "
     
     try:
-        # 2. Convert the text script to speech
-        tts = gTTS(text=audio_script, lang='en', tld='com', slow=False)
+        import asyncio
+        import edge_tts
         
-        # 3. Match your script's native timestamp and ARCHIVE_FOLDER variable rules
+        # 2. Define filenames and paths
         audio_filename = f"{timestamp}.mp3"
         audio_filepath = os.path.join(ARCHIVE_FOLDER, audio_filename)
         
-        # 4. Save it locally
-        tts.save(audio_filepath)
-        print(f"🔊 Audio file successfully compiled: {audio_filepath}")
+        # 3. Select a natural voice and run the compiler
+        # 'en-US-AndrewNeural' is a clean, masculine news-anchor style voice.
+        # Alternative: 'en-US-AvaNeural' for a crisp, professional female voice.
+        async def voice_compile():
+            communicate = edge_tts.Communicate(audio_script, "en-US-EmmaNeural")
+            await communicate.save(audio_filepath)
+            
+        asyncio.run(voice_compile())
+        print(f"🔊 Neural audio file successfully compiled: {audio_filepath}")
         
     except Exception as e:
-        print(f"⚠️ Audio generation failed: {e}")
+        print(f"⚠️ Neural audio generation failed: {e}")
+    # ========================================================
     # ========================================================
 
     # Fire the GitHub routine to push BOTH the JSON and the MP3 file together
