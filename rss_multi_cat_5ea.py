@@ -282,7 +282,7 @@ if len(all_results) > 0:
     print("🔊 Generating NEURAL audio broadcast from scraped intel...")
     
     # 1. Compile the news text into a single spoken script
-    audio_script = "Starting tactical intelligence report broadcast. "
+    audio_script = "Here are your updates on current events from Fact Extract."
     for entry in all_results:
         category = entry.get('category', 'General').upper()
         title = entry.get('title', 'Untitled Report')

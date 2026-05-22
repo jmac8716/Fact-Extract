@@ -80,7 +80,7 @@ if file_path and os.path.exists(file_path):
         expected_audio_path = file_path.replace('.json', '.mp3')
     
         if os.path.exists(expected_audio_path):
-            st.markdown("### 🔊 Audio Intel Broadcast")
+            st.markdown("### 🔊 Fact Extract Audio Readout")
             with open(expected_audio_path, "rb") as audio_file:
                 st.audio(audio_file.read(), format="audio/mp3")
     else:    
