@@ -257,14 +257,42 @@ else:
 
 
 # --- PART C: SAVE AND SYNC HUB ---
+def wake_streamlit_dashboard():
+    # 🎯 STEP 1: CHANGE THIS TO YOUR EXACT LIVE STREAMLIT WEBSITE URL
+    streamlit_url = "https://fact-extract-pgd2aegjjzb8thwozbtzfm.streamlit.app/" 
+    
+    print(f"📡 Playwright checking if dashboard is awake at: {streamlit_url}")
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(streamlit_url, timeout=60000)
+            
+            # Attempt to click the wake-up button if it is on screen (5-second quick check)
+            try:
+                page.click("button:has-text('Yes, get this app back up!')", timeout=5000)
+                print("💤 App was sleeping! Automatic wake-up sequence triggered successfully.")
+                print("⏳ Allowing container 10 seconds to spin up...")
+                time.sleep(10)
+            except:
+                print("🚀 App is already wide awake and serving traffic cleanly.")
+                
+            browser.close()
+    except Exception as e:
+        print(f"⚠️ Playwright auto-wake routine encountered an option check gap: {e}")
+
 def push_to_github():
     print("🚀 Syncing new intelligence to GitHub...")
     try:
         os.chdir(r"C:\Users\jmac8\OneDrive\Documents\GitHub\Fact Extract") 
         subprocess.run(["git", "add", "."], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-update News Archive with Audio Broadcast"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-update News Archive with Audio Broadcast & Auto-Wake"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("✅ Cloud Update Complete!")
+        
+        # 🎙️ Kickoff the auto-waker right after the files are safely on the cloud
+        wake_streamlit_dashboard()
+        
     except Exception as e:
         print(f"⚠️ GitHub sync failed: {e}")
 
@@ -281,7 +309,6 @@ if len(all_results) > 0:
     # ========================================================
     print("🔊 Generating NEURAL audio broadcast from scraped intel...")
     
-    # 1. Compile the news text into a single spoken script
     audio_script = "Here are your updates on current events from Fact Extract. "
     for entry in all_results:
         category = entry.get('category', 'General').upper()
@@ -294,11 +321,9 @@ if len(all_results) > 0:
         import asyncio
         import edge_tts
         
-        # 2. Define filenames and paths
         audio_filename = f"{timestamp}.mp3"
         audio_filepath = os.path.join(ARCHIVE_FOLDER, audio_filename)
         
-        # 3. Compile the script using Emma's neural voice
         async def voice_compile():
             communicate = edge_tts.Communicate(audio_script, "en-US-EmmaNeural")
             await communicate.save(audio_filepath)
@@ -310,7 +335,6 @@ if len(all_results) > 0:
         print(f"⚠️ Neural audio generation failed: {e}")
     # ========================================================
 
-    # 🔥 NEW BUFFER: Give OneDrive 5 seconds to scan the heavy mp3 file and let go of its lock
     print("⏳ Waiting 5 seconds for system file locks to clear...")
     time.sleep(5)
 
